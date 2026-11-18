@@ -21,9 +21,28 @@
   // Scroll-linked motion: solid header, progress bar, hero drift, photo parallax.
   var top = d.querySelector('.top'), bar = d.querySelector('.progress'), heroIn = d.querySelector('.hero .wrap');
   var plx = [].slice.call(d.querySelectorAll('[data-plx]')), ticking = false;
+  var heroForm = d.getElementById('get-quote'), qtab = d.querySelector('.qtab'), mbar = d.querySelector('.mbar');
+
+  // Slide-out quote form
+  var qd = d.querySelector('dialog.qd');
+  if (qd && qd.showModal) {
+    d.querySelectorAll('[data-open-quote]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        qd.showModal(); hold(true);
+        if (window.innerWidth > 1040) setTimeout(function () { qd.querySelector('input').focus(); }, 350);
+      });
+    });
+    qd.querySelector('.qd-x').addEventListener('click', function () { qd.close(); });
+    qd.addEventListener('click', function (e) { if (e.target === qd) qd.close(); });
+    qd.addEventListener('close', function () { hold(false); });
+  }
   var onScroll = function () {
     var y = window.scrollY, vh = window.innerHeight;
     if (top) top.classList.toggle('scrolled', y > 20);
+    // Quote tab / phone bar follow the visitor once the hero form has scrolled out of view.
+    var follow = !heroForm || heroForm.getBoundingClientRect().bottom < 0;
+    if (qtab) qtab.classList.toggle('on', follow);
+    if (mbar) mbar.classList.toggle('on', follow || y > 300);
     if (!calm) {
       if (bar) bar.style.transform = 'scaleX(' + Math.min(1, y / Math.max(1, d.body.scrollHeight - vh)).toFixed(4) + ')';
       if (heroIn && window.innerWidth > 1040 && y < vh * 1.2) {
