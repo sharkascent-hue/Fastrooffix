@@ -5,17 +5,46 @@
   root.classList.add('js');
   var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Header turns solid once the page scrolls; hero photo drifts slightly.
-  var top = d.querySelector('.top'), ticking = false;
+  // Smooth, weighted scrolling (desktop wheel/trackpad; touch keeps its native feel).
+  var lenis = null;
+  if (window.Lenis && !calm) {
+    lenis = new window.Lenis({ lerp: 0.085, wheelMultiplier: 1 });
+    (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(performance.now());
+    d.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href^="#"]');
+      var el = a && a.getAttribute('href').length > 1 && d.querySelector(a.getAttribute('href'));
+      if (el) { e.preventDefault(); lenis.scrollTo(el, { offset: -90, duration: 1.2 }); }
+    });
+  }
+  var hold = function (on) { if (lenis) lenis[on ? 'stop' : 'start'](); };
+
+  // Scroll-linked motion: solid header, progress bar, hero drift, photo parallax.
+  var top = d.querySelector('.top'), bar = d.querySelector('.progress'), heroIn = d.querySelector('.hero .wrap');
+  var plx = [].slice.call(d.querySelectorAll('[data-plx]')), ticking = false;
   var onScroll = function () {
-    var y = window.scrollY;
+    var y = window.scrollY, vh = window.innerHeight;
     if (top) top.classList.toggle('scrolled', y > 20);
+    if (!calm) {
+      if (bar) bar.style.transform = 'scaleX(' + Math.min(1, y / Math.max(1, d.body.scrollHeight - vh)).toFixed(4) + ')';
+      if (heroIn && window.innerWidth > 1040 && y < vh * 1.2) {
+        heroIn.style.transform = 'translate3d(0,' + (y * 0.18).toFixed(1) + 'px,0)';
+        heroIn.style.opacity = Math.max(0, 1 - y / (vh * 0.85)).toFixed(3);
+      }
+      plx.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < vh) el.style.setProperty('--plx', (((r.top + r.height / 2) - vh / 2) * -0.06).toFixed(1) + 'px');
+      });
+    }
     ticking = false;
   };
   window.addEventListener('scroll', function () {
     if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
   }, { passive: true });
   onScroll();
+
+  // Hero video: stay on the poster frame for visitors who ask for less motion or data saving.
+  var vid = d.querySelector('video.hero-bg');
+  if (vid && (calm || (navigator.connection && navigator.connection.saveData))) { vid.removeAttribute('autoplay'); vid.pause(); }
 
   // Mobile menu
   var burger = d.querySelector('.burger'), mnav = d.querySelector('.mnav');
@@ -24,6 +53,7 @@
       mnav.classList.toggle('open', open);
       burger.setAttribute('aria-expanded', open);
       d.body.style.overflow = open ? 'hidden' : '';
+      hold(open);
     };
     burger.addEventListener('click', function () { toggle(!mnav.classList.contains('open')); });
     mnav.addEventListener('click', function (e) { if (e.target.closest('a')) toggle(false); });
@@ -34,7 +64,12 @@
   var rv = d.querySelectorAll('.rv');
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+        if (e.target.hasAttribute('data-plx')) setTimeout(function () { e.target.classList.add('settled'); }, 1700);
+      });
     }, { rootMargin: '0px 0px -6% 0px' });
     rv.forEach(function (el) { io.observe(el); });
   } else rv.forEach(function (el) { el.classList.add('in'); });
@@ -63,12 +98,13 @@
       ct.textContent = (idx + 1) + ' / ' + links.length;
     };
     links.forEach(function (a, i) {
-      a.addEventListener('click', function (e) { e.preventDefault(); show(i); dlg.showModal(); });
+      a.addEventListener('click', function (e) { e.preventDefault(); show(i); dlg.showModal(); hold(true); });
     });
     dlg.querySelector('.x').onclick = function () { dlg.close(); };
     dlg.querySelector('.p').onclick = function () { show(idx - 1); };
     dlg.querySelector('.nx').onclick = function () { show(idx + 1); };
     dlg.addEventListener('click', function (e) { if (e.target.classList.contains('lb-in')) dlg.close(); });
+    dlg.addEventListener('close', function () { hold(false); });
     dlg.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowLeft') show(idx - 1);
       if (e.key === 'ArrowRight') show(idx + 1);
