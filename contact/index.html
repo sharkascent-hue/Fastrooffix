@@ -29,14 +29,12 @@
 <div class="wrap">
 <a class="brand" href="../" aria-label="Fast Roof Repairs Dublin home"><img src="../assets/img/logo.png" alt="Fast Roof Repairs Dublin" width="284" height="250"></a>
 <nav class="nav" aria-label="Main"><a href="../">Home</a><a href="../services/">Services</a><a href="../gallery/">Gallery</a><a href="../about/">About</a><a href="../contact/" aria-current=page>Contact</a></nav>
-<a class="top-phone" href="tel:+353851738320"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2z"/></svg>085 173 8320</a>
-<a class="btn btn-primary btn-sm" href="../contact/#quote">Get a free quote <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+<a class="btn btn-primary btn-sm" href="tel:+353851738320"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2z"/></svg>Call 085 173 8320</a>
 <button class="burger" aria-label="Menu" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
 </div>
 </header>
 <nav class="mnav" aria-label="Mobile"><a class="m" href="../">Home<span>01</span></a><a class="m" href="../services/">Services<span>02</span></a><a class="m" href="../gallery/">Gallery<span>03</span></a><a class="m" href="../about/">About<span>04</span></a><a class="m" href="../contact/">Contact<span>05</span></a>
-<a class="btn btn-primary" href="../contact/#quote">Get a free quote</a>
-<a class="btn btn-ghost" href="tel:+353851738320"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2z"/></svg>Call 085 173 8320</a>
+<a class="btn btn-primary" href="tel:+353851738320"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2z"/></svg>Call 085 173 8320</a>
 </nav>
 <main id="main">
 <section class="phead">
@@ -61,17 +59,18 @@
 <div><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span><small>Hours</small>Emergency repairs available</span></div>
 </div>
 </div>
-<form class="form rv" data-quote data-site="Fast Roof Repairs Dublin" data-wa="353851738320" data-email="fastroofrepairsdublin@gmail.com">
-<h3>Request a free quote</h3>
-<p>Free and no-obligation. Name and phone are all we need to get back to you.</p>
+<form class="form rv" id="quote-form" data-quote data-site="Fast Roof Repairs Dublin" data-wa="353851738320" data-phone="085 173 8320" data-endpoint="">
+<h3 class="form-title">Get your free quote</h3>
+<p>Free and no obligation. We will ring you back.</p>
 <label>Name<input name="name" autocomplete="name" required></label>
-<label>Phone<input name="phone" type="tel" autocomplete="tel" required></label>
+<label>Phone<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
 <label>Email (optional)<input name="email" type="email" autocomplete="email"></label>
 <label>Area / Eircode<input name="area" autocomplete="postal-code"></label>
 <label class="full">Service needed<select name="service"><option value="">Choose a service</option><option>Roof Repairs</option><option>New Roof Installation</option><option>Fibreglass Roofing</option><option>Flat Roofing</option><option>Tile &amp; Slate Roofing</option><option>Chimney Repairs</option><option>Dry Verge Systems</option><option>Dry Ridge Systems</option><option>Velux Windows &amp; Skylights</option><option>Roof Cleaning</option><option>Other</option></select></label>
-<label class="full">Details (optional)<textarea name="details" placeholder="What is the problem, and how urgent is it?"></textarea></label>
-<div class="send"><button class="btn btn-wa" value="whatsapp"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20l1.3-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg>Send on WhatsApp</button><button class="btn btn-ghost" value="email"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>Send by email</button></div>
-<p class="form-ok" hidden role="status">Thanks. Your message is ready in WhatsApp or your email app: just press send there. If it is urgent, ring 085 173 8320.</p>
+<label class="full">What is the problem? (optional)<textarea name="details"></textarea></label>
+<button class="btn btn-primary full">Get my free quote <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<p class="form-ok" hidden role="status"></p>
+<ul class="form-trust"><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Free, no-obligation quote</li><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Clear price, no hidden fees</li><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>No job too small</li></ul>
 </form>
 </div>
 </section>

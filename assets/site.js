@@ -6,11 +6,10 @@
   var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Header turns solid once the page scrolls; hero photo drifts slightly.
-  var top = d.querySelector('.top'), heroBg = d.querySelector('.hero .hero-bg'), ticking = false;
+  var top = d.querySelector('.top'), ticking = false;
   var onScroll = function () {
     var y = window.scrollY;
     if (top) top.classList.toggle('scrolled', y > 20);
-    if (heroBg && !calm && y < 1200) heroBg.style.transform = 'translate3d(0,' + (y * 0.12).toFixed(1) + 'px,0)';
     ticking = false;
   };
   window.addEventListener('scroll', function () {
@@ -110,18 +109,38 @@
     });
   });
 
-  // Quote form: no backend, so the request is handed to WhatsApp or the visitor's email app.
+  // Conversion events for Google Ads / Analytics (picked up by gtag or Tag Manager when installed).
+  var track = function (name) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: name });
+    if (typeof window.gtag === 'function') window.gtag('event', name);
+  };
+  d.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="tel:"],a[href*="wa.me"]');
+    if (a) track(a.href.indexOf('tel:') === 0 ? 'phone_click' : 'whatsapp_click');
+  });
+
+  // Quote form: posts to the form backend when one is configured, otherwise opens WhatsApp with the details filled in.
   d.querySelectorAll('form[data-quote]').forEach(function (f) {
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      var v = new FormData(f), rows = ['Quote request from ' + f.dataset.site];
+      var v = new FormData(f), rows = ['Quote request from ' + f.dataset.site], ok = f.querySelector('.form-ok');
       [['name', 'Name'], ['phone', 'Phone'], ['email', 'Email'], ['area', 'Area'], ['service', 'Service'], ['details', 'Details']]
         .forEach(function (p) { if (v.get(p[0])) rows.push(p[1] + ': ' + v.get(p[0])); });
-      var text = encodeURIComponent(rows.join('\n'));
-      if (e.submitter && e.submitter.value === 'email')
-        location.href = 'mailto:' + f.dataset.email + '?subject=' + encodeURIComponent('Quote request') + '&body=' + text;
-      else window.open('https://wa.me/' + f.dataset.wa + '?text=' + text, '_blank', 'noopener');
-      f.querySelector('.form-ok').hidden = false;
+      var done = function (msg) { ok.textContent = msg; ok.hidden = false; };
+      var viaWhatsApp = function () {
+        window.open('https://wa.me/' + f.dataset.wa + '?text=' + encodeURIComponent(rows.join('\n')), '_blank', 'noopener');
+        done('Nearly there: press send in WhatsApp and we will ring you back. Urgent? Call ' + f.dataset.phone + '.');
+      };
+      track('quote_form_submit');
+      if (!f.dataset.endpoint) return viaWhatsApp();
+      fetch(f.dataset.endpoint, { method: 'POST', headers: { Accept: 'application/json' }, body: v })
+        .then(function (r) {
+          if (!r.ok) throw 0;
+          f.reset();
+          done('Thanks, we have your details and will ring you back shortly. Urgent? Call ' + f.dataset.phone + '.');
+        })
+        .catch(viaWhatsApp);
     });
   });
 })();
