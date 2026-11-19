@@ -62,8 +62,18 @@
   onScroll();
 
   // Hero video: stay on the poster frame for visitors who ask for less motion or data saving.
+  // Phones get the lighter portrait cut; nothing downloads for reduced-motion or data-saver visitors.
   var vid = d.querySelector('video.hero-bg');
-  if (vid && (calm || (navigator.connection && navigator.connection.saveData))) { vid.removeAttribute('autoplay'); vid.pause(); }
+  if (vid) {
+    var small = window.matchMedia('(max-width: 700px)').matches;
+    if (small && vid.dataset.posterM) vid.poster = vid.dataset.posterM;
+    if (calm || (navigator.connection && navigator.connection.saveData)) vid.removeAttribute('autoplay');
+    else {
+      vid.src = small ? vid.dataset.srcM : vid.dataset.src;
+      var p = vid.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+  }
 
   // Mobile menu
   var burger = d.querySelector('.burger'), mnav = d.querySelector('.mnav');

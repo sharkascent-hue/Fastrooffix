@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://fastroofrepairsdublin.ie/sitemap.xml
