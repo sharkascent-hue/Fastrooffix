@@ -386,8 +386,7 @@ footer{background:var(--dark-deep);color:#fff;padding:76px 0 22px;font-size:.94r
 @media (max-width:1040px){
   .nav,.top-phone,.top .btn{display:none}
   .burger{display:flex}
-  .util .wrap>span{display:none}
-  .util .wrap{justify-content:center}
+  .util{display:none}
   .top{margin-bottom:-74px}
   .top .wrap{height:74px}
   .brand{height:52px}
