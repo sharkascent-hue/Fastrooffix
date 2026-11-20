@@ -104,6 +104,15 @@ section{padding:clamp(64px,8vw,116px) 0;position:relative}
 .hero-call{margin-top:26px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .hero-call a{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:1.5rem;color:#fff}
 .hero-call a svg{color:var(--accent-hi)}
+.hero-side{display:grid;gap:14px}
+.sis-mini{display:flex;align-items:center;gap:14px;padding:10px 14px 10px 10px;border-radius:18px;background:rgba(22,23,27,.62);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;transition:transform .25s,border-color .25s}
+.sis-mini:hover{transform:translateY(-3px);border-color:var(--accent-hi)}
+.sis-mini img{width:96px;height:60px;object-fit:cover;object-position:top left;border-radius:10px;flex:none;border:1px solid rgba(255,255,255,.25)}
+.sis-mini span:not(.go){display:grid;line-height:1.3;min-width:0;flex:1}
+.sis-mini small{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--accent-hi)}
+.sis-mini b{font-family:var(--font-display);font-size:1.02rem}
+.sis-mini em{font-style:normal;font-size:.84rem;color:rgba(255,255,255,.75)}
+.sis-mini .go{width:38px;height:38px;border-radius:50%;background:#fff;color:#14161a;display:grid;place-items:center;flex:none}
 .hero-form{box-shadow:0 40px 80px -30px rgba(0,0,0,.75);gap:14px}
 .hero-form textarea{min-height:0;height:76px}
 .hero-form{gap:12px}
