@@ -175,35 +175,53 @@
   });
 
   // Conversion events for Google Ads / Analytics (picked up by gtag or Tag Manager when installed).
-  var track = function (name) {
+  var track = function (name, sendTo) {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ event: name });
-    if (typeof window.gtag === 'function') window.gtag('event', name);
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', name);
+      if (sendTo) window.gtag('event', 'conversion', { send_to: sendTo });
+    }
   };
+  var ads = window.ADS || {};
   d.addEventListener('click', function (e) {
     var a = e.target.closest('a[href^="tel:"],a[href*="wa.me"]');
-    if (a) track(a.href.indexOf('tel:') === 0 ? 'phone_click' : 'whatsapp_click');
+    if (!a) return;
+    if (a.href.indexOf('tel:') === 0) track('phone_click', ads.call);
+    else track('whatsapp_click');
   });
 
-  // Quote form: posts to the form backend when one is configured, otherwise opens WhatsApp with the details filled in.
+  // Remember where the visitor came from (Google Ads click id and UTM tags) so it arrives with the lead.
+  var src = {};
+  try { src = JSON.parse(sessionStorage.getItem('lead_src') || '{}'); } catch (err) {}
+  var qs = new URLSearchParams(location.search);
+  ['gclid', 'utm_source', 'utm_campaign', 'utm_term'].forEach(function (k) { if (qs.get(k)) src[k] = qs.get(k); });
+  if (!src.landing) src.landing = location.pathname;
+  try { sessionStorage.setItem('lead_src', JSON.stringify(src)); } catch (err) {}
+
+  // Quote form: sends to Web3Forms, then opens the thank-you page. Falls back to WhatsApp if sending fails.
   d.querySelectorAll('form[data-quote]').forEach(function (f) {
     f.addEventListener('submit', function (e) {
       e.preventDefault();
+      ['gclid', 'utm_source', 'utm_campaign', 'utm_term'].forEach(function (k) { if (f.elements[k]) f.elements[k].value = src[k] || ''; });
+      if (f.elements.page) f.elements.page.value = location.href.split('?')[0] + (src.landing && src.landing !== location.pathname ? ' (landed on ' + src.landing + ')' : '');
       var v = new FormData(f), rows = ['Quote request from ' + f.dataset.site], ok = f.querySelector('.form-ok');
+      var btn = f.querySelector('button.btn-primary'), label = btn.innerHTML;
       [['name', 'Name'], ['phone', 'Phone'], ['email', 'Email'], ['area', 'Area'], ['service', 'Service'], ['details', 'Details']]
         .forEach(function (p) { if (v.get(p[0])) rows.push(p[1] + ': ' + v.get(p[0])); });
       var done = function (msg) { ok.textContent = msg; ok.hidden = false; };
       var viaWhatsApp = function () {
+        btn.disabled = false; btn.innerHTML = label;
         window.open('https://wa.me/' + f.dataset.wa + '?text=' + encodeURIComponent(rows.join('\n')), '_blank', 'noopener');
-        done('Nearly there: press send in WhatsApp and we will ring you back. Urgent? Call ' + f.dataset.phone + '.');
+        done('We could not send the form just now, so it has opened in WhatsApp: press send there. Urgent? Call ' + f.dataset.phone + '.');
       };
-      track('quote_form_submit');
       if (!f.dataset.endpoint) return viaWhatsApp();
+      btn.disabled = true; btn.textContent = 'Sending…';
       fetch(f.dataset.endpoint, { method: 'POST', headers: { Accept: 'application/json' }, body: v })
-        .then(function (r) {
-          if (!r.ok) throw 0;
-          f.reset();
-          done('Thanks, we have your details and will ring you back shortly. Urgent? Call ' + f.dataset.phone + '.');
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.success) throw 0; }); })
+        .then(function () {
+          track('generate_lead');
+          location.href = f.dataset.thanks;
         })
         .catch(viaWhatsApp);
     });
