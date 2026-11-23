@@ -191,6 +191,29 @@
     else track('whatsapp_click');
   });
 
+  // Cookie banner: Accept / Decline updates Google Consent Mode and is remembered on this device.
+  var cookie = d.querySelector('.cookie');
+  var stored = null;
+  try { stored = localStorage.getItem('cookie_consent'); } catch (err) {}
+  var setConsent = function (v) {
+    try { localStorage.setItem('cookie_consent', v); } catch (err) {}
+    if (typeof window.gtag === 'function') {
+      window.gtag('consent', 'update', { ad_storage: v, ad_user_data: v, ad_personalization: v, analytics_storage: v });
+      window.gtag('set', 'ads_data_redaction', v === 'denied');
+    }
+    cookie.hidden = true;
+    d.body.classList.remove('has-cookie');
+  };
+  if (cookie) {
+    if (!stored) { cookie.hidden = false; d.body.classList.add('has-cookie'); }
+    cookie.querySelectorAll('[data-consent]').forEach(function (b) {
+      b.addEventListener('click', function () { setConsent(b.dataset.consent); });
+    });
+    d.querySelectorAll('[data-cookie-settings]').forEach(function (b) {
+      b.addEventListener('click', function () { cookie.hidden = false; d.body.classList.add('has-cookie'); });
+    });
+  }
+
   // Remember where the visitor came from (Google Ads click id and UTM tags) so it arrives with the lead.
   var src = {};
   try { src = JSON.parse(sessionStorage.getItem('lead_src') || '{}'); } catch (err) {}

@@ -365,6 +365,12 @@ footer{background:var(--dark-deep);color:#fff;padding:76px 0 22px;font-size:.94r
 .foot-pages{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:22px}
 .foot-pages li{margin:0}
 .msub,.msub-h{display:none}
+.cookie{position:fixed;left:20px;bottom:20px;z-index:60;width:min(420px,calc(100% - 40px));background:#fff;color:#14161a;border-radius:18px;padding:18px 20px;box-shadow:0 24px 60px -18px rgba(0,0,0,.5);border:1px solid #e4e7ec;display:grid;gap:12px;font-size:.9rem;line-height:1.5}
+.cookie[hidden]{display:none}
+.cookie a{text-decoration:underline}
+.cookie div{display:flex;gap:10px;justify-content:flex-end}
+.cookie .btn-ghost{border-color:#c5cad2;color:#14161a}
+.linkbtn{background:none;border:0;padding:0;color:inherit;font:inherit;text-decoration:underline;cursor:pointer}
 .mbar{display:none}
 
 /* Quote tab that follows the visitor down the page, and its slide-out form */
@@ -444,6 +450,7 @@ footer{background:var(--dark-deep);color:#fff;padding:76px 0 22px;font-size:.94r
   .mbar .tex-brick,.mbar .tex-slate{background-size:auto}
   .mbar{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:40;display:grid;grid-template-columns:1.5fr 1fr auto;gap:8px;padding:8px;background:rgba(15,16,20,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:999px}
   .mbar .btn{min-height:48px;padding:0 16px;font-size:.95rem;box-shadow:none}
+  .cookie{left:10px;right:10px;width:auto;bottom:calc(80px + env(safe-area-inset-bottom))}
   .mbar{transform:translateY(140%);transition:transform .5s cubic-bezier(.16,1,.3,1)}
   .mbar.on{transform:none}
 }
